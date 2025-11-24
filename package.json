@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "diverse-comments",
+  "version": "0.0.0",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "dependencies": {
+    "@devvit/public-api": "0.12.3",
+    "vitest": "^3.2.2"
+  },
+  "devDependencies": {
+    "devvit": "0.12.3",
+    "typescript": "5.8.3"
+  }
+}

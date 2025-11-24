@@ -1,0 +1,10 @@
+{
+  "name": "diverse-comments",
+  "blocks": {
+    "entry": "src/main.tsx",
+    "triggers": ["onCommentCreate", "onCommentDelete"]
+  },
+  "dev": {
+    "subreddit": "CapitalOneBank"
+  }
+}
