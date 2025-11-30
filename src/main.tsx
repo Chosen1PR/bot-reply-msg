@@ -159,12 +159,11 @@ Devvit.addTrigger({
     if (!(modTeamApplicable || automodApplicable || parentInBotList)) return; // If parent isn't applicable bot, do nothing.
     const recipients = await getRecipients(context);
     if (recipients.length == 0) return; // If no recipients, do nothing.
-    // All conditions met. Get parent post to get its permalink.
-    const post = await context.reddit.getPostById(comment.postId);
+    // All conditions met.
     // Iterate through recipients and send PM to each one.
     for (let i = 0; i < recipients.length; i++) {
       const recipient = recipients[i].trim();
-      await pmUser(recipient, commentAuthor, parentAuthor, subredditName, comment.permalink, post.permalink, context);
+      await pmUser(recipient, commentAuthor, parentAuthor, subredditName, comment.permalink, context);
     }
   },
 });
@@ -176,15 +175,16 @@ async function pmUser(
   botUsername: string,
   subredditName: string,
   commentLink: string,
-  postLink: string,
+  //postLink: string,
   context: TriggerContext
 ) {
   const knownBots = [ "bot-reply-msg", "AutoModerator", subredditName + "-ModTeam" ];
   if (recipientUsername == undefined || recipientUsername == "" || knownBots.includes(recipientUsername))
     return;// If recipient is undefined, blank, this app, or a known bot, do nothing.
   const subjectText = `Someone replied to a bot in r/${subredditName}`;
-  var messageText = `u/${authorUsername} has replied to u/${botUsername}.` +
-    `\n\n- [Comment Link](${commentLink})\n- [Post Link](${postLink})`;
+  var messageText = `u/${authorUsername} replied to u/${botUsername}.` +
+    `\n\n- [Comment Link](${commentLink})` +
+    `\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/bot-reply-msg)`;
   //messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (authorUsername) {
     // If you want to send a PM as the subreddit, uncomment the line below and comment out the next line

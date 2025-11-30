@@ -30,7 +30,7 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
-### [0.0.13] Initial version (2025-11-29)
+### [0.0.15] Initial version (2025-11-29)
 
 #### Features
 
