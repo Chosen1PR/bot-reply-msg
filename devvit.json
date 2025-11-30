@@ -1,8 +1,10 @@
 {
-  "name": "diverse-comments",
+  "name": "bot-reply-msg",
   "blocks": {
     "entry": "src/main.tsx",
-    "triggers": ["onCommentCreate", "onCommentDelete"]
+    "triggers": [
+      "onCommentCreate"
+    ]
   },
   "dev": {
     "subreddit": "CapitalOneBank"
