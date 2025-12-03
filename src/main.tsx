@@ -123,47 +123,39 @@ Devvit.addMenuItem({
 Devvit.addTrigger({
   event: "CommentCreate",
   onEvent: async (event, context) => {
-    // Check if app is enabled.
-    const appEnabled = (await context.settings.get("app-enable")) as boolean;
-    if (!appEnabled) return; // If app is not enabled, do nothing.
+    // If app is not enabled, do nothing.
+    if (!(await context.settings.get("app-enable"))) return;
     // Check if replies by mods are ignored and if author is mod.
-    const ignoreMods = (await context.settings.get("ignore-mods")) as boolean;
-    const commentId = event.comment?.id!;
-    const comment = await context.reddit.getCommentById(commentId);
-    const commentAuthor = comment.authorName;
-    const authorIsMod = (await userIsMod(commentAuthor, context)) as boolean;
-    if (authorIsMod && ignoreMods) return; // If author is mod and replies by mods are ignored, do nothing.
-    // Check if parent is post or comment.
-    const parentId = comment.parentId!;
+    if (await context.settings.get("ignore-mods")) {
+      const authorIsMod = (await userIsMod(event.author?.name!, context)) as boolean;
+      if (authorIsMod) return; // If author is mod and replies by mods are ignored, do nothing.
+    }
+    const parentId = event.comment?.parentId!;
     var parentAuthor = "";
     if (parentId.startsWith("t3_")) { // Parent is a post.
-      const postRepliesEnabled = (await context.settings.get("post-enable")) as boolean;
-      if (!postRepliesEnabled) return; // If app is not enabled for post replies, do nothing.
-      const parentPost = await context.reddit.getPostById(parentId);
+      if (!(await context.settings.get("post-enable"))) return; // If app is not enabled for post replies, do nothing.
+      const parentPost = await context.reddit.getPostById(parentId)!;
       parentAuthor = parentPost.authorName;
     }
     else { // Parent is a comment (starts with "t1_").
-      const parentComment = await context.reddit.getCommentById(parentId);
+      const parentComment = await context.reddit.getCommentById(parentId)!;
       parentAuthor = parentComment.authorName;
     }
-    const subredditName = context.subredditName!;
-    // Compare parent author username to ModTeam user and AutoModerator.
-    const modTeamEnabled = context.settings.get("modteam-enable");
-    const parentIsModTeam = (parentAuthor == (subredditName + "-ModTeam"));
-    const modTeamApplicable = (parentIsModTeam && modTeamEnabled);
-    const automodEnabled = context.settings.get("automod-enable");
-    const parentIsAutomod = (parentAuthor == "AutoModerator");
-    const automodApplicable = (parentIsAutomod && automodEnabled);
-    // Compare parent author username to list of bot usernames.
-    const parentInBotList = await usernameInBotList(parentAuthor, context);
-    if (!(modTeamApplicable || automodApplicable || parentInBotList)) return; // If parent isn't applicable bot, do nothing.
+    // // If parent isn't applicable bot, do nothing.
+    if (!parentUsernameIsApplicable(parentAuthor, context)) return;
+    // Get recipients.
     const recipients = await getRecipients(context);
     if (recipients.length == 0) return; // If no recipients, do nothing.
     // All conditions met.
     // Iterate through recipients and send PM to each one.
     for (let i = 0; i < recipients.length; i++) {
-      const recipient = recipients[i].trim();
-      await pmUser(recipient, commentAuthor, parentAuthor, subredditName, comment.permalink, context);
+      await pmUser(
+        recipients[i].trim(), // Recipient username from list
+        event.author?.name!, // Comment author's username
+        parentAuthor, // Parent author (bot) username.
+        context.subredditName!, // Current subreddit
+        event.comment?.permalink!, // Comment link
+        context); // Current TriggerContext
     }
   },
 });
@@ -178,15 +170,19 @@ async function pmUser(
   //postLink: string,
   context: TriggerContext
 ) {
-  const knownBots = [ "bot-reply-msg", "AutoModerator", subredditName + "-ModTeam" ];
-  if (recipientUsername == undefined || recipientUsername == "" || knownBots.includes(recipientUsername))
-    return;// If recipient is undefined, blank, this app, or a known bot, do nothing.
+  //console.log("Recipient: " + recipientUsername);
+  //console.log("Author: " + authorUsername);
+  //console.log("Bot: " + botUsername);
+  //console.log("Subreddit: " + subredditName);
+  //console.log("Link: " + commentLink);
+  if (!isValidRecipientName(recipientUsername, subredditName))
+    return; // If recipient is undefined, blank, this app, or a known bot, do nothing.
   const subjectText = `Someone replied to a bot in r/${subredditName}`;
   var messageText = `u/${authorUsername} replied to u/${botUsername}.` +
-    `\n\n- [Comment Link](${commentLink})` +
+    `\n\n- [**Comment Link**](${commentLink})` +
     `\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/bot-reply-msg)`;
   //messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
-  if (authorUsername) {
+  if (recipientUsername) {
     // If you want to send a PM as the subreddit, uncomment the line below and comment out the next line
     //await context.reddit.sendPrivateMessageAsSubreddit({
     try {
@@ -207,38 +203,43 @@ async function pmUser(
   }
 }
 
-// Helper function for determining if comment author is a moderator
+// Helper function for getting recipients for PM
 async function getRecipients(context: TriggerContext) {
   const recipientWhitelist = (await context.settings.get("recipient-whitelist")) as string;
-  const modBlacklist = (await context.settings.get("mod-blacklist")) as string;
   const whitelistHasSomething = (recipientWhitelist != undefined && recipientWhitelist.trim() != "");
-  const blacklistHasSomething = (modBlacklist != undefined && modBlacklist.trim() != "");
   if (whitelistHasSomething) {
+    // If whitelist is not empty, use that.
     return recipientWhitelist.trim().split(',');
   }
+  const modBlacklist = (await context.settings.get("mod-blacklist")) as string;
+  const blacklistHasSomething = (modBlacklist != undefined && modBlacklist.trim() != "");
   if (blacklistHasSomething) {
+    // If blacklist is not empty, check that.
     const blacklist = modBlacklist.trim().split(',');
     const filteredMods = await getFilteredMods(blacklist, context);
     return filteredMods;
   }
-  else {
+  else { // If both whitelist and blacklist are empty, get all mods.
     const allMods = await getAllMods(context);
     return allMods;
   }
 }
 
-// Helper function to get the list of bots to monitor
-async function getBots(context: TriggerContext) {
-  const botUsernames = (await context.settings.get("bot-usernames")) as string;
-  const botListHasSomething = (botUsernames != undefined && botUsernames.trim() != "");
-  if (botListHasSomething)
-    return botUsernames.trim().split(',');
-  else return [];
+// Helper function for determining if recipient of direct message is valid
+function isValidRecipientName(username: string | undefined, subredditName: string) {
+  if (username == undefined || username == "")
+    return false;
+  const knownBots = [ "bot-reply-msg", "AutoModerator", subredditName + "-ModTeam" ];
+  return (!knownBots.includes(username));
 }
 
 // Helper function to find out if a username is in the list of bots to monitor.
 async function usernameInBotList(username: string, context: TriggerContext) {
-  const bots = await getBots(context);
+  const botUsernames = (await context.settings.get("bot-usernames")) as string;
+  const botListHasSomething = (botUsernames != undefined && botUsernames.trim() != "");
+  var bots: string[] = [];
+  if (botListHasSomething)
+    bots =  botUsernames.trim().split(',');
   var userIsBot = false;
   for (let i = 0; i < bots.length; i++) {
     const botUsername = bots[i].trim();
@@ -283,6 +284,42 @@ async function getFilteredMods(blacklist: string[], context: TriggerContext) {
 
 // Helper function for determining if comment author is a moderator
 async function userIsMod(username: string, context: TriggerContext) {
+  if (username == undefined || username == "")
+    return false;
+  const subredditName = context.subredditName!;
+  if (username == "AutoModerator" || username == (subredditName + "-ModTeam"))
+    return true;
+  // Base conditions satisfied. Get user object.
+  const user = await context.reddit.getUserByUsername(username);
+  if (!user) return false; // If user not found, return false.
+  const modPermissions = await user.getModPermissionsForSubreddit(subredditName);
+  if (!modPermissions) return false; // For no permissions object, return false.
+  else if (modPermissions.length < 1) return false; // For no permissions in the object, return false.
+  else return true; // Otherwise, it's a mod; return true.
+}
+
+async function parentUsernameIsApplicable(parentUsername: string, context: TriggerContext) {
+  const subredditName = context.subredditName!;
+  // Compare parent author username to ModTeam user and AutoModerator.
+  const modTeamEnabled = (await context.settings.get("modteam-enable")) as boolean;
+  const parentIsModTeam = (parentUsername == (subredditName + "-ModTeam"));
+  const modTeamApplicable = (parentIsModTeam && modTeamEnabled);
+  const automodEnabled = (await context.settings.get("automod-enable")) as boolean;
+  const parentIsAutomod = (parentUsername == "AutoModerator");
+  const automodApplicable = (parentIsAutomod && automodEnabled);
+  // Compare parent author username to list of bot usernames.
+  const parentInBotList = await usernameInBotList(parentUsername, context);
+  // Return true if any of the conditions are applicable.
+  return (modTeamApplicable || automodApplicable || parentInBotList);
+}
+
+// Helper function for determining if comment author is a moderator
+async function userIsModLegacy(username: string, context: TriggerContext) {
+  if (username == undefined || username == "")
+    return false;
+  const subredditName = context.subredditName!;
+  if (username == "AutoModerator" || username == (subredditName + "-ModTeam"))
+    return false;
   const modList = context.reddit.getModerators({ subredditName: context.subredditName! }!);
   const mods = await modList.all();
   var isMod = false;

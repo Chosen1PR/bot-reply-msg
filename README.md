@@ -1,6 +1,6 @@
 ## Features
 
-This app allows moderators to be notified by private message whenever a user replies to a bot, such as the [subreddit]-ModTeam account.
+This app allows moderators to be notified by private message whenever a user replies to a bot in their subreddit, such as the [subreddit]-ModTeam account.
 
 - Define a list of bot accounts to monitor.
 - Message all mods individually with bot reply notifications.
@@ -30,7 +30,7 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
-### [0.0.15] Initial version (2025-11-29)
+### [0.0.21] Initial version (2025-12-02)
 
 #### Features
 
