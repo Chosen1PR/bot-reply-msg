@@ -180,7 +180,7 @@ async function pmUser(
   const subjectText = `Someone replied to a bot in r/${subredditName}`;
   var messageText = `u/${authorUsername} replied to u/${botUsername}.` +
     `\n\n- [**Comment Link**](${commentLink})` +
-    `\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/bot-reply-msg)`;
+    `\n\n---\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/bot-reply-msg)`;
   //messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (recipientUsername) {
     // If you want to send a PM as the subreddit, uncomment the line below and comment out the next line
