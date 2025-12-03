@@ -142,7 +142,7 @@ Devvit.addTrigger({
       parentAuthor = parentComment.authorName;
     }
     // // If parent isn't applicable bot, do nothing.
-    if (!parentUsernameIsApplicable(parentAuthor, context)) return;
+    if (!(await parentUsernameIsApplicable(parentAuthor, context))) return;
     // Get recipients.
     const recipients = await getRecipients(context);
     if (recipients.length == 0) return; // If no recipients, do nothing.
