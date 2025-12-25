@@ -5,7 +5,6 @@ import {
 } from "@devvit/public-api";
 
 Devvit.configure({
-  //redis: true,
   redditAPI: true,
 });
 
@@ -112,7 +111,8 @@ Devvit.addSettings([
 // Button for settings form
 Devvit.addMenuItem({
   label: "Bot Reply Messenger",
-  location: "subreddit", // can also be 'comment' or 'subreddit'
+  description: "Settings",
+  location: "subreddit",
   forUserType: "moderator",
   onPress: async (event, context) => {
     context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/bot-reply-msg`);
