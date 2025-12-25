@@ -5,11 +5,11 @@
   "license": "BSD-3-Clause",
   "type": "module",
   "dependencies": {
-    "@devvit/public-api": "0.12.5",
+    "@devvit/public-api": "0.12.7",
     "vitest": "^3.2.2"
   },
   "devDependencies": {
-    "devvit": "0.12.5",
+    "devvit": "0.12.7",
     "typescript": "5.8.3"
   }
 }
