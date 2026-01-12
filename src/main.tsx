@@ -40,8 +40,8 @@ Devvit.addSettings([
         name: "send-for-modteam",
         label: "Message for replies to -ModTeam account",
         helpText:
-          "Enables messaging for replies to [subreddit]-ModTeam account.",
-        defaultValue: false,
+          "Enables messaging for replies to the [subreddit]-ModTeam account.",
+        defaultValue: true,
         scope: "installation",
       },
       // Config setting for AutoModerator replies
@@ -51,7 +51,7 @@ Devvit.addSettings([
         label: "Message for replies to AutoModerator",
         helpText:
           "Enables messaging for replies to u/AutoModerator.",
-        defaultValue: false,
+        defaultValue: true,
         scope: "installation",
       },
       // Config setting for bot usernames
