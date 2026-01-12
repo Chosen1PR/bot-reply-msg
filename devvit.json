@@ -6,6 +6,9 @@
       "onCommentCreate"
     ]
   },
+  "marketingAssets": {
+    "icon": "assets/brm-icon.png"
+  },
   "dev": {
     "subreddit": "CapitalOneBank"
   }

@@ -8,6 +8,7 @@ This app allows moderators to be notified by private message whenever a user rep
 - Define an allowlist of users to message which would override the mod list and could also include non-mod users.
 - Ignore comment replies from mods.
 - Optionally enable messaging for replies to bot posts in addition to bot comments.
+- Optionally define a message to send to users who reply to bot comments.
 
 **Note:** To ensure proper functionality of this app, mods should explicitly allow the bot account (u/bot-reply-msg) to contact them privately. This can be accomplished using the following steps.
 
@@ -29,6 +30,13 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 ---
 
 ## Changelog
+
+### [1.0.0] (2026-01-11)
+
+#### Features
+
+- Added the ability to message users who reply to bot comments.
+- Bumped major version.
 
 ### [0.1.1] (2025-12-24)
 
