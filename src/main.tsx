@@ -14,7 +14,7 @@ Devvit.addSettings([
   // Config setting to enable app
   {
     type: "boolean",
-    name: "app-enable",
+    name: "message-mods",
     label: "Message mods",
     helpText: "Enables chat messages to mods for replies to bot accounts. Configure further settings below.",
     defaultValue: true,
@@ -22,7 +22,7 @@ Devvit.addSettings([
   },
   {
     type: "boolean",
-    name: "user-enable",
+    name: "message-users",
     label: "Message users",
     helpText: "Enables chat messages to users when they reply to bots. Configure further settings below.",
     defaultValue: false,
@@ -37,7 +37,7 @@ Devvit.addSettings([
       // Config setting for ModTeam replies
       {
         type: "boolean",
-        name: "modteam-enable",
+        name: "send-for-modteam",
         label: "Message for replies to -ModTeam account",
         helpText:
           "Enables messaging for replies to [subreddit]-ModTeam account.",
@@ -47,7 +47,7 @@ Devvit.addSettings([
       // Config setting for AutoModerator replies
       {
         type: "boolean",
-        name: "automod-enable",
+        name: "send-for-automod",
         label: "Message for replies to AutoModerator",
         helpText:
           "Enables messaging for replies to u/AutoModerator.",
@@ -125,7 +125,7 @@ Devvit.addSettings([
   // Config setting to enable notifications for post replies
   {
     type: "boolean",
-    name: "post-enable",
+    name: "send-for-posts",
     label: "Message for post replies",
     helpText:
       "Enable messages for replies to bot posts in addition to bot comments. Affects both mod and user messages.",
@@ -151,7 +151,7 @@ Devvit.addMenuItem({
   location: "subreddit",
   forUserType: "moderator",
   onPress: async (event, context) => {
-    context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/bot-reply-msg`);
+    context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/${context.appName}`);
   },
 });
 
@@ -161,7 +161,7 @@ Devvit.addTrigger({
   onEvent: async (event, context) => {
     // Check if the reply is to a post.
     const parentId = event.comment?.parentId!;
-    if (!(await context.settings.get("post-enable"))) {
+    if (!(await context.settings.get("send-for-posts"))) {
       const isPostReply = parentId.startsWith("t3_");
       if (isPostReply) return; // If messages for post replies are disabled and this is a post reply, do nothing.
     }
@@ -173,7 +173,7 @@ Devvit.addTrigger({
     }
     // If mod messaging is enabled, proceed.
     const commentLink = event.comment?.permalink!;
-    if (await context.settings.get("app-enable")) {
+    if (await context.settings.get("message-mods")) {
       await messageModsIfBotReply(
         authorName,
         parentId,
@@ -182,7 +182,7 @@ Devvit.addTrigger({
       );
     }
     // If user messaging is enabled, proceed.
-    if (await context.settings.get("user-enable")) {
+    if (await context.settings.get("message-users")) {
       await messageUserIfBotReply(
         authorName,
         parentId,

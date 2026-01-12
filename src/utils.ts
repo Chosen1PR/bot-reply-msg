@@ -75,12 +75,12 @@ export async function pmMod(
   //console.log("Bot: " + botUsername);
   //console.log("Subreddit: " + subredditName);
   //console.log("Link: " + commentLink);
-  if (!isValidRecipientName(recipientUsername, subredditName))
+  if (!isValidRecipientName(recipientUsername, subredditName, context.appName))
     return; // If recipient is undefined, blank, this app, or a known bot, do nothing.
   const subjectText = `Someone replied to a bot in r/${subredditName}.`;
   var messageText = `u/${authorUsername} replied to u/${botUsername}.` +
     `\n\n- [**Comment Link**](${commentLink})` +
-    `\n\n---\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/bot-reply-msg)`;
+    `\n\n---\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/${context.appName})`;
   //messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (recipientUsername) {
     // If you want to send a PM as the subreddit, uncomment the line below and comment out the next line
@@ -111,7 +111,7 @@ export async function pmUser(
   subredditName: string,
   context: TriggerContext
 ) {
-  if (!isValidRecipientName(username, subredditName))
+  if (!isValidRecipientName(username, subredditName, context.appName))
     return; // If recipient is undefined, blank, this app, or a known bot, do nothing.
   messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (username) {
@@ -158,10 +158,10 @@ export async function getRecipients(context: TriggerContext) {
 }
 
 // Helper function for determining if recipient of direct message is valid
-function isValidRecipientName(username: string | undefined, subredditName: string) {
+function isValidRecipientName(username: string | undefined, subredditName: string, appName: string) {
   if (username == undefined || username == "")
     return false;
-  const knownBots = [ "bot-reply-msg", "AutoModerator", subredditName + "-ModTeam" ];
+  const knownBots = [ appName, "AutoModerator", subredditName + "-ModTeam" ];
   return (!knownBots.includes(username));
 }
 
@@ -234,10 +234,10 @@ export async function userIsMod(username: string, context: TriggerContext) {
 export async function parentUsernameIsApplicable(parentUsername: string, context: TriggerContext) {
   const subredditName = context.subredditName!;
   // Compare parent author username to ModTeam user and AutoModerator.
-  const modTeamEnabled = (await context.settings.get("modteam-enable")) as boolean;
+  const modTeamEnabled = (await context.settings.get("send-for-modteam")) as boolean;
   const parentIsModTeam = (parentUsername == (subredditName + "-ModTeam"));
   const modTeamApplicable = (parentIsModTeam && modTeamEnabled);
-  const automodEnabled = (await context.settings.get("automod-enable")) as boolean;
+  const automodEnabled = (await context.settings.get("send-for-automod")) as boolean;
   const parentIsAutomod = (parentUsername == "AutoModerator");
   const automodApplicable = (parentIsAutomod && automodEnabled);
   // Compare parent author username to list of bot usernames.
