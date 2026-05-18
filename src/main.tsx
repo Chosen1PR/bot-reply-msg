@@ -151,7 +151,7 @@ Devvit.addMenuItem({
   location: "subreddit",
   forUserType: "moderator",
   onPress: async (event, context) => {
-    context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/${context.appName}`);
+    context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/${context.appSlug}`);
   },
 });
 

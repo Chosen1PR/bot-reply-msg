@@ -75,12 +75,12 @@ export async function pmMod(
   //console.log("Bot: " + botUsername);
   //console.log("Subreddit: " + subredditName);
   //console.log("Link: " + commentLink);
-  if (!isValidRecipientName(recipientUsername, subredditName, context.appName))
+  if (!isValidRecipientName(recipientUsername, subredditName, context.appSlug))
     return; // If recipient is undefined, blank, this app, or a known bot, do nothing.
   const subjectText = `Someone replied to a bot in r/${subredditName}.`;
   var messageText = `u/${authorUsername} replied to u/${botUsername}.` +
     `\n\n- [**Comment Link**](${commentLink})` +
-    `\n\n---\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/${context.appName})`;
+    `\n\n---\n\n[App Settings](https://developers.reddit.com/r/${subredditName}/apps/${context.appSlug})`;
   //messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (recipientUsername) {
     // If you want to send a PM as the subreddit, uncomment the line below and comment out the next line
@@ -111,7 +111,7 @@ export async function pmUser(
   subredditName: string,
   context: TriggerContext
 ) {
-  if (!isValidRecipientName(username, subredditName, context.appName))
+  if (!isValidRecipientName(username, subredditName, context.appSlug))
     return; // If recipient is undefined, blank, this app, or a known bot, do nothing.
   messageText += `\n\n---\n\n*Do not reply; this inbox is not monitored.*`;
   if (username) {
