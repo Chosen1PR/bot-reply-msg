@@ -31,7 +31,7 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
-### [1.0.2] (2026-06-03)
+### [1.0.6] (2026-06-03)
 
 - Removed the Settings menu item at subreddit level for a cleaner menu. Settings are still accessible from developers.reddit.com.
 - Updated Devvit CLI to 0.13.2.
