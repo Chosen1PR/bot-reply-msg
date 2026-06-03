@@ -144,7 +144,9 @@ Devvit.addSettings([
   },
 ]);
 
+/*
 // Button for settings form
+// Likely not needed
 Devvit.addMenuItem({
   label: "Bot Reply Messenger",
   description: "Settings",
@@ -154,6 +156,7 @@ Devvit.addMenuItem({
     context.ui.navigateTo(`https://developers.reddit.com/r/${context.subredditName!}/apps/${context.appSlug}`);
   },
 });
+*/
 
 // Comment trigger handler
 Devvit.addTrigger({
@@ -192,7 +195,5 @@ Devvit.addTrigger({
     }
   },
 });
-
-
 
 export default Devvit;

@@ -6,10 +6,10 @@
   "type": "module",
   "dependencies": {
     "@devvit/public-api": "0.12.24",
-    "vitest": "^3.2.2"
+    "vitest": "^4.1.8"
   },
   "devDependencies": {
-    "devvit": "0.12.24",
+    "devvit": "^0.13.2",
     "typescript": "5.8.3"
   }
 }
