@@ -202,13 +202,19 @@ async function getFilteredMods(blacklist: string[], context: TriggerContext) {
   // Iterate through each mod.
   for (let i = 0; i < mods.length; i++) {
     const modUsername = mods[i].username;
+    var modIsBlacklisted = false;
     // For each mod, compare their username against each username in the blacklist.
     for (let j = 0; j < blacklist.length; j++) {
-      const blacklistedUser = blacklist[j].trim();
-      // If mod is not blacklisted, add them to the list of recipients.
-      if (modUsername != blacklistedUser) {
-        modList.push(modUsername);
+      const blacklistedUsername = blacklist[j].trim();
+      // If mod is blacklisted, mark them as such and break out of this inner loop into the outer loop.
+      if (modUsername == blacklistedUsername) {
+        modIsBlacklisted = true;
+        break;
       }
+    }
+    // If mod is not blacklisted, add them to the list of recipients.
+    if (!modIsBlacklisted) {
+      modList.push(modUsername);
     }
   }
   return modList;

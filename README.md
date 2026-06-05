@@ -31,6 +31,10 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
+### [1.0.7] (2026-06-05)
+
+- Fixed an issue which could cause the app to send multiple identical private messages to the same moderator for a single event when a moderator blacklist was used.
+
 ### [1.0.6] (2026-06-03)
 
 - Removed the Settings menu item at subreddit level for a cleaner menu. Settings are still accessible from developers.reddit.com.
