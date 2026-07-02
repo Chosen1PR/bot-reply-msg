@@ -4,6 +4,8 @@ import {
   messageModsIfBotReply,
   messageUserIfBotReply,
   userIsMod,
+  getEventValue,
+  isValidUsername
 } from "./utils.js";
 
 Devvit.configure({
@@ -163,19 +165,25 @@ Devvit.addTrigger({
   event: "CommentCreate",
   onEvent: async (event, context) => {
     // Check if the reply is to a post.
-    const parentId = event.comment?.parentId!;
+    const parentId = getEventValue(event, ['comment', 'parentId']),
+    id = getEventValue(event, ['comment', 'id']),
+    commentLink = getEventValue(event, ['comment', 'permalink']);
     if (!(await context.settings.get("send-for-posts"))) {
       const isPostReply = parentId.startsWith("t3_");
       if (isPostReply) return; // If messages for post replies are disabled and this is a post reply, do nothing.
     }
+    // Get username and if it's invalid, try fetching it again from the Comment object.
+    let authorName = getEventValue(event, ['author', 'name']);
+    if (!isValidUsername(authorName)) {
+      const comment = await context.reddit.getCommentById(id);
+      if (comment) authorName = comment.authorName;
+    }
     // Check if replies by mods should be ignored.
-    const authorName = event.author?.name!;
     if (await context.settings.get("ignore-mods")) {
       const authorIsMod = (await userIsMod(authorName, context)) as boolean;
       if (authorIsMod) return; // If author is mod and replies by mods are ignored, do nothing.
     }
     // If mod messaging is enabled, proceed.
-    const commentLink = event.comment?.permalink!;
     if (await context.settings.get("message-mods")) {
       await messageModsIfBotReply(
         authorName,

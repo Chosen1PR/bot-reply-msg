@@ -251,3 +251,38 @@ export async function parentUsernameIsApplicable(parentUsername: string, context
   // Return true if any of the conditions are applicable.
   return (modTeamApplicable || automodApplicable || parentInBotList);
 }
+
+// Helper function for when Devvit is borked and shows an invalid username.
+export function isValidUsername(username: string) {
+  const name = username.toLowerCase();
+  return (
+    name != '[redacted]' &&
+    name != '[deleted]' &&
+    name != ''
+  );
+}
+
+// Helper function for when Devvit is borked and shows an invalid user ID.
+export function isValidUserId(userId: string) {
+  return (userId != 't2_0' && userId != '');
+}
+
+// Helper function to get the specific fields of an event.
+// Returns empty string if value is not found.
+export function getEventValue(event: any, ...paths: Array<string[]>) {
+  for (const path of paths) {
+    let current: any = event;
+    let found = true;
+    for (const key of path) {
+      if (current == null || typeof current !== 'object' || !(key in current)) {
+        found = false;
+        break;
+      }
+      current = current[key];
+    }
+    if (found && current != null && current !== '') {
+      return String(current);
+    }
+  }
+  return '';
+}

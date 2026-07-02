@@ -31,6 +31,10 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
+### [1.0.8] (2026-07-02)
+
+- Implemented a workaround for when Devvit passes invalid usernames.
+
 ### [1.0.7] (2026-06-05)
 
 - Fixed an issue which could cause the app to send multiple identical private messages to the same moderator for a single event when a moderator blacklist was used.
