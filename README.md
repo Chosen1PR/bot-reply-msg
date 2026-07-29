@@ -33,7 +33,8 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ### [1.1.0] (2026-07-29)
 
-- Rewrote entire app using Devvit Web for better future proofing and maintainability. No feature changes.
+- Rewrote entire app using Devvit Web for better future proofing and maintainability.
+- New default for message to users instead of being blank by default. The toggle settings still controls whether or not messages are sent to users.
 
 ### [1.0.8] (2026-07-02)
 
