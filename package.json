@@ -3,12 +3,29 @@
   "name": "bot-reply-msg",
   "version": "0.0.0",
   "type": "module",
+  "scripts": {
+    "build:server": "cd src/server && vite build",
+    "build": "npm run build:server",
+    "deploy": "npm run build && npx devvit upload",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,DEVVIT\" -c \"blue,green,magenta\" \"npm run dev:server\" \"npm run dev:devvit\"",
+    "dev:devvit": "dotenv -e .env -- npx devvit playtest",
+    "dev:server": "cd src/server && vite build --watch",
+    "login": "npx devvit login",
+    "launch": "npm run build && npm run deploy && npx devvit publish",
+    "type-check": "tsc --build",
+    "playtest": "npm run build && npx devvit playtest",
+    "publish": "npm run build && npx devvit publish --public"
+  },
   "dependencies": {
-    "@devvit/public-api": "0.13.6",
-    "vitest": "^4.1.8"
+    "@devvit/web": "0.13.10",
+    "express": "5.1.0"
   },
   "devDependencies": {
-    "devvit": "0.13.6",
-    "typescript": "5.8.3"
+    "@types/express": "5.0.1",
+    "concurrently": "9.1.2",
+    "devvit": "0.13.10",
+    "dotenv-cli": "8.0.0",
+    "typescript": "5.8.3",
+    "vite": "^7.2.6"
   }
 }

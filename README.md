@@ -31,6 +31,10 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
+### [1.1.0] (2026-07-29)
+
+- Rewrote entire app using Devvit Web for better future proofing and maintainability. No feature changes.
+
 ### [1.0.8] (2026-07-02)
 
 - Implemented a workaround for when Devvit passes invalid usernames.
