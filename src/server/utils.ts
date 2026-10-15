@@ -160,7 +160,7 @@ export async function getRecipients() {
 function isValidRecipientName(username: string | undefined, subredditName: string, appName: string) {
   if (username == undefined || username == "")
     return false;
-  const knownBots = [ appName, "AutoModerator", subredditName + "-ModTeam" ];
+  const knownBots = [ appName, "AutoModerator", "automod-neo", subredditName + "-ModTeam" ];
   return (!knownBots.includes(username));
 }
 
@@ -238,12 +238,12 @@ export async function userIsMod(username: string) {
 // Helper function to determine if parent author is applicable bot
 export async function parentUsernameIsApplicable(parentUsername: string) {
   const subredditName = context.subredditName!;
-  // Compare parent author username to ModTeam user and AutoModerator.
+  // Compare parent author username to ModTeam user and Automod.
   const modTeamEnabled = (await settings.get("send-for-modteam")) as boolean;
   const parentIsModTeam = (parentUsername == (subredditName + "-ModTeam"));
   const modTeamApplicable = (parentIsModTeam && modTeamEnabled);
   const automodEnabled = (await settings.get("send-for-automod")) as boolean;
-  const parentIsAutomod = (parentUsername == "AutoModerator");
+  const parentIsAutomod = (parentUsername == "AutoModerator" || parentUsername == "automod-neo");
   const automodApplicable = (parentIsAutomod && automodEnabled);
   // Compare parent author username to list of bot usernames.
   const parentInBotList = await usernameInBotList(parentUsername);

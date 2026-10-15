@@ -42,8 +42,8 @@
           },
           "send-for-automod": {
             "type": "boolean",
-            "label": "Message for replies to AutoModerator",
-            "helpText": "Enables messaging for replies to u/AutoModerator.",
+            "label": "Message for replies to Automod",
+            "helpText": "Enables messaging for replies to u/AutoModerator and u/automod-neo.",
             "defaultValue": true
           },
           "bot-usernames": {
@@ -62,7 +62,7 @@
           "mod-blacklist": {
             "type": "paragraph",
             "label": "Mod blocklist",
-            "helpText": "Comma (,) separated list of moderators who will not receive messages. Leave blank to send to all mods (except AutoModerator and this app). This setting is ignored if there is at least one username in the allowlist.",
+            "helpText": "Comma (,) separated list of moderators who will not receive messages. Leave blank to send to all mods (except Automod and this app). This setting is ignored if there is at least one username in the allowlist.",
             "defaultValue": ""
           },
           "recipient-whitelist": {

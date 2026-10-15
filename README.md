@@ -31,6 +31,10 @@ On mobile (instructions for iOS, but should be possible on Android as well):
 
 ## Changelog
 
+### [1.1.1] (2026-10-15)
+
+- Added compatibility with Automod Neo to the "Message for replies to Automod" setting.
+
 ### [1.1.0] (2026-07-29)
 
 - Rewrote entire app using Devvit Web for better future proofing and maintainability.
